@@ -190,6 +190,9 @@ test_questions = [
 
 ## ❓ সমস্যা সমাধান (Troubleshooting)
 
+### ❌ Error: "cannot import name 'DataCollatorForCompletionOnlyLM'"
+**সমাধান**: এই সমস্যা ইতিমধ্যে fix করা হয়েছে! নতুন notebook ব্যবহার করুন যেখানে `DataCollatorForLanguageModeling` ব্যবহার করা হয়েছে।
+
 ### ❌ Error: "No GPU available"
 **সমাধান**: Runtime → Change runtime type → T4 GPU নির্বাচন করুন
 
