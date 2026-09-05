@@ -1,0 +1,164 @@
+
+[MATHEMATICS GLOSSARY AND FUNDAMENTAL OPERATORS]
+Mathematical notation is the universal language of science and logic.
+Basic arithmetic operators:
++ : Addition (যোগ) e.g., 5 + 7 = 12, ১২ + ১৫ = ২৭
+- : Subtraction (বিয়োগ) e.g., 20 - 8 = 12, ৫০ - ২৫ = ২৫
+* or × : Multiplication (গুণ) e.g., 6 * 7 = 42, ৮ × ৯ = ৭২
+/ or ÷ : Division (ভাগ) e.g., 81 / 9 = 9, ১০০ ÷ ৪ = ২৫
+= : Equal to (সমান) e.g., 2 + 2 = 4
+≠ : Not equal to (সমান নয়) e.g., 5 ≠ 7
+≈ : Approximately equal to (প্রায় সমান) e.g., π ≈ 3.1415926535
+< : Less than (ছোট) e.g., 3 < 5
+> : Greater than (বড়) e.g., 10 > 2
+≤ : Less than or equal to (ছোট বা সমান)
+≥ : Greater than or equal to (বড় বা সমান)
+± : Plus-minus (যোগ-বিয়োগ) e.g., x = ± 5
+% : Percentage (শতকরা) e.g., 25% of 200 = 50
+^ or ** : Exponentiation (ঘাত বা শক্তি) e.g., 2^3 = 8, x^2 + y^2 = r^2
+√ : Square root (বর্গমূল) e.g., √16 = 4, √81 = 9, ∛27 = 3
+∞ : Infinity (অসীম)
+π : Pi constant ≈ 3.14159, e : Euler constant ≈ 2.71828
+    
+
+
+[ARITHMETIC AND ALGEBRA: BILINGUAL EXPLANATIONS]
+
+Problem: Solve for x in the equation: 3x + 12 = 27
+Solution:
+Step 1: Subtract 12 from both sides of the equation.
+3x + 12 - 12 = 27 - 12
+3x = 15
+Step 2: Divide both sides by 3.
+3x / 3 = 15 / 3
+x = 5
+Answer: The solution is x = 5.
+
+সমস্যা: একটি সমীকরণ সমাধান করো: 5x - 15 = 35
+সমাধান:
+ধাপ ১: উভয় পক্ষে ১৫ যোগ করি।
+5x - 15 + 15 = 35 + 15
+5x = 50
+ধাপ ২: উভয় পক্ষকে ৫ দ্বারা ভাগ করি।
+5x / 5 = 50 / 5
+x = 10
+উত্তর: নির্ণেয় সমাধান x = 10।
+
+Quadratic Formula (দ্বিঘাত সমীকরণ সূত্র):
+For any quadratic equation ax^2 + bx + c = 0, where a ≠ 0:
+x = (-b ± √(b^2 - 4ac)) / (2a)
+The term (b^2 - 4ac) is called the discriminant (নিশ্চায়ক বা পৃথায়ক).
+If discriminant > 0: Two real and distinct roots exist.
+If discriminant = 0: Two real and equal roots exist (x = -b / (2a)).
+If discriminant < 0: Complex conjugate roots exist.
+
+Example: Solve x^2 - 5x + 6 = 0
+Factoring: (x - 2)(x - 3) = 0
+Therefore, x - 2 = 0 => x = 2, or x - 3 = 0 => x = 3.
+Roots are x = 2 and x = 3.
+    
+
+
+[GEOMETRY AND MENSURATION FORMULAS]
+
+1. Circle (বৃত্ত):
+- Radius (ব্যাসার্ধ) = r, Diameter (ব্যাস) = d = 2r
+- Circumference (পরিধি) = 2 * π * r
+- Area (ক্ষেত্রফল) = π * r^2
+
+2. Rectangle (আয়তক্ষেত্র):
+- Length = l, Width = w
+- Perimeter (পরিসীমা) = 2 * (l + w)
+- Area (ক্ষেত্রফল) = l * w
+
+3. Triangle (ত্রিভুজ):
+- Base = b, Height = h
+- Area = 0.5 * base * height = (1/2) * b * h
+- Pythagorean Theorem (পিথাগোরাসের উপপাদ্য) for right-angled triangle:
+  Hypotenuse^2 = Base^2 + Perpendicular^2
+  c^2 = a^2 + b^2 => c = √(a^2 + b^2)
+
+4. Sphere (গোলক):
+- Surface Area = 4 * π * r^2
+- Volume (আয়তন) = (4/3) * π * r^3
+
+5. Cylinder (সিলিন্ডার):
+- Volume = π * r^2 * h
+- Curved Surface Area = 2 * π * r * h
+    
+
+
+[CALCULUS, DERIVATIVES AND INTEGRALS]
+
+1. Limits (সীমা):
+lim (x -> 0) [sin(x) / x] = 1
+lim (x -> ∞) [(1 + 1/x)^x] = e ≈ 2.71828
+
+2. Common Derivatives (অন্তরীকরণ):
+d/dx [c] = 0 (where c is a constant)
+d/dx [x^n] = n * x^(n - 1)
+d/dx [e^x] = e^x
+d/dx [ln(x)] = 1/x
+d/dx [sin(x)] = cos(x)
+d/dx [cos(x)] = -sin(x)
+d/dx [tan(x)] = sec^2(x)
+
+Product Rule: d/dx [u * v] = u * (dv/dx) + v * (du/dx)
+Quotient Rule: d/dx [u / v] = (v * (du/dx) - u * (dv/dx)) / (v^2)
+Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)
+
+3. Common Integrals (সমাকলন):
+∫ x^n dx = (x^(n+1)) / (n+1) + C (for n ≠ -1)
+∫ (1/x) dx = ln|x| + C
+∫ e^x dx = e^x + C
+∫ cos(x) dx = sin(x) + C
+∫ sin(x) dx = -cos(x) + C
+Integration by parts: ∫ u dv = u * v - ∫ v du
+    
+
+
+[MATHEMATICAL WORD PROBLEMS & REASONING]
+
+Problem 1:
+English: A shopkeeper buys a book for $80 and sells it for $100. Calculate the profit percentage.
+Solution:
+Cost Price (CP) = $80
+Selling Price (SP) = $100
+Profit = SP - CP = $100 - $80 = $20
+Profit Percentage = (Profit / CP) * 100 = (20 / 80) * 100 = (1 / 4) * 100 = 25%
+Answer: The profit percentage is 25%.
+
+বাংলা সমস্যা ১:
+একটি দ্রব্যের ক্রয়মূল্য ৮০০ টাকা এবং বিক্রয়মূল্য ১০০০ টাকা। শতকরা লাভ কত?
+সমাধান:
+ক্রয়মূল্য = ৮০০ টাকা
+বিক্রয়মূল্য = ১০০০ টাকা
+লাভ = ১০০০ - ৮০০ = ২০০ টাকা
+শতকরা লাভ = (মোট লাভ / ক্রয়মূল্য) × ১০০
+= (২০০ / ৮০০) × ১০০ = (১ / ৪) × ১০০ = ২৫%
+উত্তর: শতকরা লাভ ২৫%।
+
+Problem 2 (Speed, Distance, Time):
+Distance = Speed × Time
+Speed = Distance / Time
+Time = Distance / Speed
+Example: If a car travels 240 kilometers in 3 hours, its average speed is 240 / 3 = 80 km/h.
+    
+
+
+[GENERAL ENGLISH AND SCIENTIFIC REASONING]
+
+Artificial Intelligence and Machine Learning:
+A neural network is a computational system inspired by biological neural networks in human brains.
+Key concepts in Deep Learning:
+- Transformers: Self-attention mechanism allows models to process tokens in parallel, capturing long-range context efficiently.
+- Tokenization: Text is divided into subword tokens using algorithms like Byte-Pair Encoding (BPE).
+- Forward Pass: Input tokens pass through embedding, multi-head attention, layer normalization, and feed-forward layers to compute logits.
+- Loss Function: Cross-Entropy Loss measures the difference between predicted token probabilities and target tokens.
+- Backpropagation: Gradients are calculated with respect to weights using the chain rule, and weights are updated via optimizers like AdamW.
+
+Conversational Intelligence:
+An intelligent assistant must listen actively, understand user emotions, provide concise and factual answers, and guide the conversation productively.
+Kindness, empathy, scientific rigor, and safety ethics are fundamental pillars of human alignment.
+Every question from a human deserves thoughtful analysis, structured breakdown, and clear explanations.
+    

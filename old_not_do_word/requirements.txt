@@ -1,0 +1,47 @@
+# Core deep learning framework
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Hugging Face libraries
+transformers>=4.30.0
+tokenizers>=0.13.0
+datasets>=2.12.0
+accelerate>=0.20.0
+
+# Training utilities
+peft>=0.5.0
+bitsandbytes>=0.41.0
+
+# Configuration and utilities
+pyyaml>=6.0
+tqdm>=4.65.0
+
+# Tokenization
+sentencepiece>=0.1.99
+
+# Logging and experiment tracking
+wandb>=0.15.0
+tensorboard>=2.13.0
+
+# Model export
+onnx>=1.14.0
+onnxruntime>=1.15.0
+
+# Optional: For TensorFlow Lite export
+# tensorflow>=2.13.0
+# onnx-tf>=1.10.0
+
+# Optional: For AI Edge (PyTorch to TFLite)
+# ai-edge-torch>=0.1.0
+
+# Data processing
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Development tools (optional)
+# jupyter>=1.0.0
+# ipykernel>=6.23.0
+# black>=23.3.0
+# flake8>=6.0.0
+# pytest>=7.3.0
