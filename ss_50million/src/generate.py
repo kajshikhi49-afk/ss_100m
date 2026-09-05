@@ -16,7 +16,7 @@ def load_trained_model(base_checkpoint=None, lora_checkpoint=None, tokenizer_pat
     if device is None:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    tokenizer = BengaliTokenizer(vocab_size=5000)
+    tokenizer = BengaliTokenizer(vocab_size=10000)
     if os.path.exists(tokenizer_path):
         tokenizer.load(tokenizer_path)
     elif os.path.exists("checkpoints/tokenizer.json"):
