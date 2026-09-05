@@ -47,9 +47,8 @@ class BengaliDataset:
                 bin_cache_dir = "/content/ss_10million/data"
         if not bin_cache_dir:
             bin_cache_dir = "data"
-        os.makedirs(bin_cache_dir, exist_ok=True)
-
-        bin_file = os.path.join(bin_cache_dir, "corpus_tokens.bin")
+        base_name = os.path.splitext(os.path.basename(corpus_path))[0]
+        bin_file = os.path.join(bin_cache_dir, f"{base_name}_tokens.bin")
 
         # বাইনারি ক্যাশ আগে তৈরি না থাকলে চাঙ্ক আকারে (Chunked) প্রসেস করুন
         if not os.path.exists(bin_file) or os.path.getsize(bin_file) == 0:

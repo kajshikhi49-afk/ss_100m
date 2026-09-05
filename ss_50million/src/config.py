@@ -23,12 +23,12 @@ class GPTConfig:
     # RoPE (Rotary Position Embeddings)
     rope_theta    = 10000.0    # Base frequency for RoPE
 
-    # Training Hyperparameters (Tuned for Colab Free T4 GPU)
+    # Stage 1: Pretraining Hyperparameters (Language Foundation - 2 Epochs)
     learning_rate = 3e-4
     min_lr        = 3e-5
     batch_size    = 8          # Micro-batch size (Fast and efficient with 512 context)
     gradient_accumulation_steps = 2  # Effective batch size = 16 (8 * 2)
-    max_iters     = 5000       # Training iterations
+    max_iters     = 5000       # Pretraining steps (or dynamically calculated from 2 epochs)
     warmup_iters  = 250        # Warmup steps
     eval_interval = 250        # Evaluate every 250 steps
     eval_iters    = 25
@@ -36,11 +36,11 @@ class GPTConfig:
     beta1, beta2  = 0.9, 0.95
     grad_clip     = 1.0
 
-    # Enhanced LoRA fine-tuning parameters (4x capacity for fast language learning)
-    lora_rank           = 32
-    lora_alpha          = 64
-    lora_dropout        = 0.05
-    lora_target_modules = ['q_proj', 'k_proj', 'v_proj', 'out_proj']
+    # Stage 2: SFT / Supervised Fine-Tuning Hyperparameters (Question-Answering - 1 Epoch)
+    sft_learning_rate = 1e-4   # Lower learning rate to prevent catastrophic forgetting
+    sft_min_lr        = 1e-5
+    sft_epochs        = 1.0
+    sft_warmup_iters  = 100
 
     # Checkpoint settings (Drive synced)
     checkpoint_dir  = 'checkpoints'
