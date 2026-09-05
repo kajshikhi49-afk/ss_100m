@@ -22,8 +22,8 @@ training:
   num_train_epochs: 2
   learning_rate: 0.0003  # 3e-4
   min_lr: 0.00003        # 3e-5
-  batch_size: 4
-  gradient_accumulation_steps: 4
+  batch_size: 2
+  gradient_accumulation_steps: 8
   warmup_iters: 250
   eval_interval: 250
   eval_iters: 25

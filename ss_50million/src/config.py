@@ -28,8 +28,8 @@ class GPTConfig:
     num_train_epochs_stage1 = 2
     learning_rate      = 3e-4   # 3e-4
     min_lr             = 3e-5
-    batch_size         = 4      # Micro-batch size (4 x 512 = 2048 tokens/micro-step -> ultra-safe VRAM < 2GB)
-    gradient_accumulation_steps = 4  # Effective batch size = 16 (4 * 4) -> 8,192 tokens/step
+    batch_size         = 2      # Micro-batch size (2 x 512 = 1,024 tokens -> ultra-safe VRAM < 1.2 GB)
+    gradient_accumulation_steps = 8  # Effective batch size = 16 (2 * 8) -> 8,192 tokens/step
     max_iters          = 5000   # Pretraining steps (or dynamically calculated from 2 epochs)
     warmup_iters       = 250    # Warmup steps
     eval_interval      = 250    # Evaluate every 250 steps

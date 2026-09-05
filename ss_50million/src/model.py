@@ -158,13 +158,14 @@ class BengaliGPT(nn.Module):
             x = block(x, cos, sin)
 
         x = self.norm_f(x)
-        logits = self.lm_head(x if targets is not None else x[:, [-1], :])
 
-        loss = None
         if targets is not None:
+            logits = self.lm_head(x)
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
-
-        return logits, loss
+            return None, loss
+        else:
+            logits = self.lm_head(x[:, [-1], :])
+            return logits, None
 
     @torch.no_grad()
     def generate(self, idx, max_new_tokens=250, temperature=0.75, top_k=40, repetition_penalty=1.2, eos_id=3):
