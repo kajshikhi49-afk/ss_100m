@@ -193,3 +193,8 @@ class BengaliGPT(nn.Module):
                 break
 
         return idx
+
+
+# Alias for backward compatibility and notebook imports
+GPT = BengaliGPT
+
