@@ -9,7 +9,7 @@ model:
   num_kv_heads: 2
   num_layers: 16
   intermediate_dim: 2048
-  block_size: 256
+  block_size: 512
   dropout: 0.1
   bias: false
   rope_theta: 10000.0
@@ -22,8 +22,8 @@ training:
   num_train_epochs: 2
   learning_rate: 0.0003  # 3e-4
   min_lr: 0.00003        # 3e-5
-  batch_size: 8
-  gradient_accumulation_steps: 2
+  batch_size: 4
+  gradient_accumulation_steps: 4
   warmup_iters: 250
   eval_interval: 250
   eval_iters: 25

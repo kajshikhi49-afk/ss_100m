@@ -16,7 +16,7 @@ class GPTConfig:
     num_kv_heads  = 2          # Key-Value heads (GQA 4:1 ratio -> cuts mobile KV-Cache by 75%!)
     num_layers    = 16         # 16 Transformer layers
     intermediate_dim = 2048    # 4x MLP expansion
-    block_size    = 256        # 256 Context Length (~150-170 words, ultra-fast pretraining)
+    block_size    = 512        # 512 Context Length (~300-350 words, safe VRAM without LoRA/QLoRA)
     dropout       = 0.1
     bias          = False
 
@@ -28,8 +28,8 @@ class GPTConfig:
     num_train_epochs_stage1 = 2
     learning_rate      = 3e-4   # 3e-4
     min_lr             = 3e-5
-    batch_size         = 8      # Micro-batch size
-    gradient_accumulation_steps = 2  # Effective batch size = 16 (8 * 2)
+    batch_size         = 4      # Micro-batch size (4 x 512 = 2048 tokens/micro-step -> ultra-safe VRAM < 2GB)
+    gradient_accumulation_steps = 4  # Effective batch size = 16 (4 * 4) -> 8,192 tokens/step
     max_iters          = 5000   # Pretraining steps (or dynamically calculated from 2 epochs)
     warmup_iters       = 250    # Warmup steps
     eval_interval      = 250    # Evaluate every 250 steps
