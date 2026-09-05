@@ -16,7 +16,7 @@ class GPTConfig:
     num_kv_heads  = 2          # Key-Value heads (GQA 4:1 ratio -> cuts mobile KV-Cache by 75%!)
     num_layers    = 16         # 16 Transformer layers
     intermediate_dim = 2048    # 4x MLP expansion
-    block_size    = 2048       # 2048 Context Length (holds ~1,100 Bengali words with 10k vocab!)
+    block_size    = 512        # 512 Context Length (~300-350 Bengali words, 3x faster training!)
     dropout       = 0.1
     bias          = False
 
@@ -26,11 +26,11 @@ class GPTConfig:
     # Training Hyperparameters (Tuned for Colab Free T4 GPU)
     learning_rate = 3e-4
     min_lr        = 3e-5
-    batch_size    = 4          # Micro-batch size (Safe and fast on T4)
-    gradient_accumulation_steps = 4  # Effective batch size = 16 (4 * 4)
+    batch_size    = 8          # Micro-batch size (Fast and efficient with 512 context)
+    gradient_accumulation_steps = 2  # Effective batch size = 16 (8 * 2)
     max_iters     = 5000       # Training iterations
     warmup_iters  = 250        # Warmup steps
-    eval_interval = 500        # Evaluate every 500 steps
+    eval_interval = 250        # Evaluate every 250 steps
     eval_iters    = 25
     weight_decay  = 0.1
     beta1, beta2  = 0.9, 0.95
