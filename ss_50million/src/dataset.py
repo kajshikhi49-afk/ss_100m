@@ -16,7 +16,7 @@ class BengaliDataset:
     Uses np.memmap for zero-RAM batch sampling.
     """
 
-    def __init__(self, corpus_path="data/corpus.txt", bin_cache_dir=None, tokenizer=None, split_ratio=0.9, block_size=2048):
+    def __init__(self, corpus_path="data/corpus.txt", bin_cache_dir=None, tokenizer=None, split_ratio=0.9, block_size=256):
         self.corpus_path = corpus_path
         self.block_size = block_size
         self.split_ratio = split_ratio

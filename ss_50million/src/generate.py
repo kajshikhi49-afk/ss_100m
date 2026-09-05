@@ -45,15 +45,22 @@ def load_trained_model(base_checkpoint=None, lora_checkpoint=None, tokenizer_pat
     return model, tokenizer, config
 
 
-def generate_text(prompt="বাংলাদেশের রাজধানী",
-                  base_checkpoint=None,
+def generate_text(prompt="প্রশ্ন: ডিজিটাল মার্কেটিং কী? উত্তর:",
+                  base_checkpoint="checkpoints/stage_2/checkpoint_stage_2_final.pt",
                   lora_checkpoint=None,
                   tokenizer_path="tokenizer.json",
                   max_new_tokens=150,
-                  temperature=0.8,
-                  top_k=50,
+                  temperature=0.7,
+                  top_k=40,
                   device=None):
-    """Autoregressive text generation."""
+    """Autoregressive text generation with Stage-2 model support."""
+    # Fallback if final stage_2 model not found, try stage_1 or auto-detect
+    if not os.path.exists(base_checkpoint):
+        if os.path.exists("checkpoints/stage_1/stage_1_final.pt"):
+            base_checkpoint = "checkpoints/stage_1/stage_1_final.pt"
+        elif os.path.exists("checkpoints/checkpoint_stage_2_final.pt"):
+            base_checkpoint = "checkpoints/checkpoint_stage_2_final.pt"
+
     model, tokenizer, config = load_trained_model(base_checkpoint, lora_checkpoint, tokenizer_path, device)
 
     input_ids = tokenizer.encode(prompt, add_bos=True)

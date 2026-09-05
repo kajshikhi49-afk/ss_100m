@@ -16,35 +16,41 @@ class GPTConfig:
     num_kv_heads  = 2          # Key-Value heads (GQA 4:1 ratio -> cuts mobile KV-Cache by 75%!)
     num_layers    = 16         # 16 Transformer layers
     intermediate_dim = 2048    # 4x MLP expansion
-    block_size    = 512        # 512 Context Length (~300-350 Bengali words, 3x faster training!)
+    block_size    = 256        # 256 Context Length (~150-170 words, ultra-fast pretraining)
     dropout       = 0.1
     bias          = False
 
     # RoPE (Rotary Position Embeddings)
     rope_theta    = 10000.0    # Base frequency for RoPE
 
-    # Stage 1: Pretraining Hyperparameters (Language Foundation - 2 Epochs)
-    learning_rate = 3e-4
-    min_lr        = 3e-5
-    batch_size    = 8          # Micro-batch size (Fast and efficient with 512 context)
+    # Stage 1: Pretraining Configuration (Language Foundation)
+    data_path_stage1   = "data/corpus.txt"
+    num_train_epochs_stage1 = 2
+    learning_rate      = 3e-4   # 3e-4
+    min_lr             = 3e-5
+    batch_size         = 8      # Micro-batch size
     gradient_accumulation_steps = 2  # Effective batch size = 16 (8 * 2)
-    max_iters     = 5000       # Pretraining steps (or dynamically calculated from 2 epochs)
-    warmup_iters  = 250        # Warmup steps
-    eval_interval = 250        # Evaluate every 250 steps
-    eval_iters    = 25
-    weight_decay  = 0.1
-    beta1, beta2  = 0.9, 0.95
-    grad_clip     = 1.0
+    max_iters          = 5000   # Pretraining steps (or dynamically calculated from 2 epochs)
+    warmup_iters       = 250    # Warmup steps
+    eval_interval      = 250    # Evaluate every 250 steps
+    eval_iters         = 25
+    weight_decay       = 0.1
+    beta1, beta2       = 0.9, 0.95
+    grad_clip          = 1.0
+    output_dir_stage1  = "checkpoints/stage_1"
 
-    # Stage 2: SFT / Supervised Fine-Tuning Hyperparameters (Question-Answering - 1 Epoch)
-    sft_learning_rate = 1e-4   # Lower learning rate to prevent catastrophic forgetting
-    sft_min_lr        = 1e-5
-    sft_epochs        = 1.0
-    sft_warmup_iters  = 100
+    # Stage 2: SFT Configuration (Question-Answering / Conversation)
+    data_path_stage2   = "data/sft_data.txt"
+    num_train_epochs_stage2 = 1  # Strictly 1 epoch to prevent forgetting
+    sft_learning_rate  = 1e-4   # Lower learning rate (1e-4) to prevent catastrophic forgetting
+    sft_min_lr         = 1e-5
+    sft_warmup_iters   = 100
+    pretrained_stage1_ckpt = "checkpoints/stage_1/stage_1_final.pt"
+    output_dir_stage2  = "checkpoints/stage_2"
 
     # Checkpoint settings (Drive synced)
-    checkpoint_dir  = 'checkpoints'
-    save_interval   = 500
+    checkpoint_dir     = 'checkpoints'
+    save_interval      = 500
 
     # System & Hardware
     device = 'cuda' if torch.cuda.is_available() else 'cpu'

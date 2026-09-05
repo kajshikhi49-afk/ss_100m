@@ -1,0 +1,36 @@
+# Stage 2: SFT Configuration (Question-Answering / Conversation)
+stage: 2
+name: "sft"
+
+model:
+  vocab_size: 10000
+  embed_dim: 512
+  num_heads: 8
+  num_kv_heads: 2
+  num_layers: 16
+  intermediate_dim: 2048
+  block_size: 256
+  dropout: 0.1
+  bias: false
+  rope_theta: 10000.0
+
+data:
+  dataset_path: "data/sft_data.txt"
+  split_ratio: 0.9
+
+training:
+  num_train_epochs: 1    # Strictly 1 epoch to prevent forgetting
+  learning_rate: 0.0001  # 1e-4 lower learning rate
+  min_lr: 0.00001        # 1e-5
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  warmup_iters: 100
+  eval_interval: 250
+  eval_iters: 25
+  weight_decay: 0.1
+  grad_clip: 1.0
+
+checkpoint:
+  pretrained_checkpoint: "checkpoints/stage_1/stage_1_final.pt"
+  output_dir: "checkpoints/stage_2"
+  save_interval: 500
