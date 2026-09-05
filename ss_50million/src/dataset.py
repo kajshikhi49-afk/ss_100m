@@ -65,7 +65,8 @@ class BengaliDataset:
                     chunk_chars += len(line)
                     if chunk_chars >= CHUNK_LIMIT:
                         text_chunk = "".join(chunk_lines)
-                        ids = self.tokenizer.encode(text_chunk)
+                        encoded = self.tokenizer.encode(text_chunk)
+                        ids = encoded.ids if hasattr(encoded, "ids") else encoded
                         np.array(ids, dtype=np.uint16).tofile(f_out)
                         total_tokens += len(ids)
                         chunk_lines = []
@@ -75,7 +76,8 @@ class BengaliDataset:
 
                 if chunk_lines:
                     text_chunk = "".join(chunk_lines)
-                    ids = self.tokenizer.encode(text_chunk)
+                    encoded = self.tokenizer.encode(text_chunk)
+                    ids = encoded.ids if hasattr(encoded, "ids") else encoded
                     np.array(ids, dtype=np.uint16).tofile(f_out)
                     total_tokens += len(ids)
 
