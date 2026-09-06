@@ -128,8 +128,15 @@ def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf",
         writer.add_tokenizer_model("gpt2")
         writer.add_token_list(vocab)
         if merges:
-            writer.add_token_merges(merges)
-            print(f"✓ BPE merges added ({len(merges):,} merges)")
+            formatted_merges = []
+            for m in merges:
+                if isinstance(m, list) and len(m) == 2:
+                    formatted_merges.append(f"{m[0]} {m[1]}")
+                elif isinstance(m, str):
+                    formatted_merges.append(m)
+            writer.add_token_merges(formatted_merges)
+            print(f"✓ Formatted BPE merges added ({len(formatted_merges):,} merges)")
+        writer.add_token_scores([0.0] * len(vocab))
         writer.add_bos_token_id(2)
         writer.add_eos_token_id(3)
         writer.add_unk_token_id(1)
