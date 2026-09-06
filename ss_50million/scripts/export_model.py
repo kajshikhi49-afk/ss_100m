@@ -192,27 +192,37 @@ def export_to_onnx(checkpoint_path, output_onnx_path="bengali_gpt_50m.onnx"):
     print(f"⚡ Exporting to ONNX format: {output_onnx_path}...")
     print("=" * 60)
 
-    model = BengaliGPT(GPTConfig)
-    state_dict = torch.load(checkpoint_path, map_location="cpu")
-    cleaned = {k.replace("_orig_mod.", "").replace("module.", ""): v for k, v in state_dict.items()}
-    model.load_state_dict(cleaned)
-    model.eval()
+    try:
+        try:
+            import onnxscript
+        except ImportError:
+            os.system("pip install -q onnxscript")
+            import onnxscript
 
-    dummy_input = torch.randint(0, GPTConfig.vocab_size, (1, 32), dtype=torch.long)
-    torch.onnx.export(
-        model,
-        (dummy_input,),
-        output_onnx_path,
-        input_names=["input_ids"],
-        output_names=["logits"],
-        dynamic_axes={"input_ids": {0: "batch", 1: "sequence"}, "logits": {0: "batch", 1: "sequence"}},
-        opset_version=14,
-        do_constant_folding=True
-    )
+        model = BengaliGPT(GPTConfig)
+        state_dict = torch.load(checkpoint_path, map_location="cpu")
+        cleaned = {k.replace("_orig_mod.", "").replace("module.", ""): v for k, v in state_dict.items()}
+        model.load_state_dict(cleaned)
+        model.eval()
 
-    size_mb = os.path.getsize(output_onnx_path) / (1024 * 1024)
-    print(f"✓ ONNX export successful: {output_onnx_path} ({size_mb:.1f} MB)")
-    return output_onnx_path
+        dummy_input = torch.randint(0, GPTConfig.vocab_size, (1, 32), dtype=torch.long)
+        torch.onnx.export(
+            model,
+            (dummy_input,),
+            output_onnx_path,
+            input_names=["input_ids"],
+            output_names=["logits"],
+            dynamic_axes={"input_ids": {0: "batch", 1: "sequence"}, "logits": {0: "batch", 1: "sequence"}},
+            opset_version=14,
+            do_constant_folding=True
+        )
+
+        size_mb = os.path.getsize(output_onnx_path) / (1024 * 1024)
+        print(f"✓ ONNX export successful: {output_onnx_path} ({size_mb:.1f} MB)")
+        return output_onnx_path
+    except Exception as e:
+        print(f"⚠️ ONNX export skipped due to environment requirement: {e}")
+        return None
 
 
 if __name__ == "__main__":
