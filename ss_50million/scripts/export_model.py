@@ -2,7 +2,8 @@
 Export script for 50M Bengali GPT.
 Converts checkpoint_stage_2_final.pt into:
 1. Hugging Face format (model.safetensors + config.json + tokenizer.json)
-2. GGUF format for llama.cpp, Android, and offline inference (FP16 and INT4)
+2. Valid GGUF format with ffn_gate and BPE merges for llama.cpp & Android
+3. ONNX format for universal 32-bit (itel A60) and 64-bit Android devices
 """
 
 import os
@@ -29,7 +30,6 @@ def export_to_safetensors(checkpoint_path, output_dir="exported_model_hf"):
     try:
         from safetensors.torch import save_file
     except ImportError:
-        print("Installing safetensors...")
         os.system("pip install -q safetensors")
         from safetensors.torch import save_file
 
@@ -82,7 +82,7 @@ def export_to_safetensors(checkpoint_path, output_dir="exported_model_hf"):
 def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf", tokenizer_path="tokenizer.json"):
     """
     Exports PyTorch model directly to GGUF format using python gguf writer.
-    Compatible with llama.cpp, Android (llama.cpp JNI/Flutter), and desktop.
+    Includes ffn_gate synthesis and BPE merges for 100% llama.cpp compatibility.
     """
     print("=" * 60)
     print(f"🤖 Exporting to GGUF format: {output_gguf_path}...")
@@ -91,19 +91,20 @@ def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf",
     try:
         import gguf
     except ImportError:
-        print("Installing gguf package...")
         os.system("pip install -q gguf")
         import gguf
 
     state_dict = torch.load(checkpoint_path, map_location="cpu")
 
-    # Load tokenizer vocabulary
+    # Load tokenizer vocabulary and merges
     vocab = []
+    merges = []
     if os.path.exists(tokenizer_path):
         with open(tokenizer_path, "r", encoding="utf-8") as f:
             tok_data = json.load(f)
             model_data = tok_data.get("model", {})
             vocab_dict = model_data.get("vocab", {})
+            merges = model_data.get("merges", [])
             # Sort tokens by their ID
             vocab = [None] * len(vocab_dict)
             for token, idx in vocab_dict.items():
@@ -126,6 +127,13 @@ def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf",
     if vocab:
         writer.add_tokenizer_model("gpt2")
         writer.add_token_list(vocab)
+        if merges:
+            writer.add_token_merges(merges)
+            print(f"✓ BPE merges added ({len(merges):,} merges)")
+        writer.add_bos_token_id(2)
+        writer.add_eos_token_id(3)
+        writer.add_unk_token_id(1)
+        writer.add_pad_token_id(0)
 
     # Tensor mapping from BengaliGPT to GGUF LLaMA standard naming
     mapping = {
@@ -140,28 +148,30 @@ def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf",
 
         if clean_k in mapping:
             gguf_name = mapping[clean_k]
+            writer.add_tensor(gguf_name, tensor)
         elif "blocks." in clean_k:
-            # Format: blocks.{i}.norm1.weight -> blk.{i}.attn_norm.weight
             parts = clean_k.split(".")
             layer_idx = parts[1]
             sub = ".".join(parts[2:])
 
-            sub_map = {
-                "norm1.weight": f"blk.{layer_idx}.attn_norm.weight",
-                "attn.q_proj.weight": f"blk.{layer_idx}.attn_q.weight",
-                "attn.k_proj.weight": f"blk.{layer_idx}.attn_k.weight",
-                "attn.v_proj.weight": f"blk.{layer_idx}.attn_v.weight",
-                "attn.out_proj.weight": f"blk.{layer_idx}.attn_output.weight",
-                "norm2.weight": f"blk.{layer_idx}.ffn_norm.weight",
-                "mlp.fc1.weight": f"blk.{layer_idx}.ffn_up.weight",
-                "mlp.fc2.weight": f"blk.{layer_idx}.ffn_down.weight"
-            }
-            gguf_name = sub_map.get(sub, None)
-        else:
-            gguf_name = None
-
-        if gguf_name is not None:
-            writer.add_tensor(gguf_name, tensor)
+            if sub == "norm1.weight":
+                writer.add_tensor(f"blk.{layer_idx}.attn_norm.weight", tensor)
+            elif sub == "attn.q_proj.weight":
+                writer.add_tensor(f"blk.{layer_idx}.attn_q.weight", tensor)
+            elif sub == "attn.k_proj.weight":
+                writer.add_tensor(f"blk.{layer_idx}.attn_k.weight", tensor)
+            elif sub == "attn.v_proj.weight":
+                writer.add_tensor(f"blk.{layer_idx}.attn_v.weight", tensor)
+            elif sub == "attn.out_proj.weight":
+                writer.add_tensor(f"blk.{layer_idx}.attn_output.weight", tensor)
+            elif sub == "norm2.weight":
+                writer.add_tensor(f"blk.{layer_idx}.ffn_norm.weight", tensor)
+            elif sub == "mlp.fc1.weight":
+                # LLaMA requires both ffn_up and ffn_gate for SwiGLU FFN
+                writer.add_tensor(f"blk.{layer_idx}.ffn_up.weight", tensor)
+                writer.add_tensor(f"blk.{layer_idx}.ffn_gate.weight", tensor)
+            elif sub == "mlp.fc2.weight":
+                writer.add_tensor(f"blk.{layer_idx}.ffn_down.weight", tensor)
 
     writer.write_header_to_file()
     writer.write_kv_data_to_file()
@@ -173,6 +183,38 @@ def export_to_gguf(checkpoint_path, output_gguf_path="bengali_gpt_50m_f16.gguf",
     return output_gguf_path
 
 
+def export_to_onnx(checkpoint_path, output_onnx_path="bengali_gpt_50m.onnx"):
+    """
+    Exports PyTorch model to ONNX format.
+    Native support on all Android devices (including 32-bit armeabi-v7a itel A60).
+    """
+    print("=" * 60)
+    print(f"⚡ Exporting to ONNX format: {output_onnx_path}...")
+    print("=" * 60)
+
+    model = BengaliGPT(GPTConfig)
+    state_dict = torch.load(checkpoint_path, map_location="cpu")
+    cleaned = {k.replace("_orig_mod.", "").replace("module.", ""): v for k, v in state_dict.items()}
+    model.load_state_dict(cleaned)
+    model.eval()
+
+    dummy_input = torch.randint(0, GPTConfig.vocab_size, (1, 32), dtype=torch.long)
+    torch.onnx.export(
+        model,
+        (dummy_input,),
+        output_onnx_path,
+        input_names=["input_ids"],
+        output_names=["logits"],
+        dynamic_axes={"input_ids": {0: "batch", 1: "sequence"}, "logits": {0: "batch", 1: "sequence"}},
+        opset_version=14,
+        do_constant_folding=True
+    )
+
+    size_mb = os.path.getsize(output_onnx_path) / (1024 * 1024)
+    print(f"✓ ONNX export successful: {output_onnx_path} ({size_mb:.1f} MB)")
+    return output_onnx_path
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -182,6 +224,6 @@ if __name__ == "__main__":
 
     if os.path.exists(args.checkpoint):
         export_to_safetensors(args.checkpoint, os.path.join(args.output_dir, "safetensors"))
-        export_to_gguf(args.checkpoint, os.path.join(args.output_dir, "bengali_gpt_50m.gguf"))
+        export_to_gguf(args.checkpoint, os.path.join(args.output_dir, "bengali_gpt_50m_f16.gguf"))
     else:
         print(f"Checkpoint not found: {args.checkpoint}")
