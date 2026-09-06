@@ -35,11 +35,16 @@ def export_to_safetensors(checkpoint_path, output_dir="exported_model_hf"):
 
     # Load weights
     state_dict = torch.load(checkpoint_path, map_location="cpu")
-    # Clean up prefixes if any
+    # Clean up prefixes and clone shared memory tensors (weight tying: tok_emb == lm_head)
     cleaned_state_dict = {}
+    seen_ptrs = set()
     for k, v in state_dict.items():
         clean_k = k.replace("_orig_mod.", "").replace("module.", "")
-        cleaned_state_dict[clean_k] = v.contiguous()
+        if v.data_ptr() in seen_ptrs:
+            cleaned_state_dict[clean_k] = v.clone().contiguous()
+        else:
+            cleaned_state_dict[clean_k] = v.contiguous()
+            seen_ptrs.add(v.data_ptr())
 
     # Save model.safetensors
     safetensors_path = os.path.join(output_dir, "model.safetensors")
