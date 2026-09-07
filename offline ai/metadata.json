@@ -1,0 +1,8 @@
+{
+  "name": "Bengali AI",
+  "description": "Offline Bengali LLM chat powered by on-device GGUF model and llama.cpp",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

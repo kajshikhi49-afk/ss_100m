@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.pt
+*.bin
+*.safetensors
+*.gguf
+*.onnx
+
+# Gradle & Android
+.gradle/
+build/
+**/build/
+.cxx/
+**/.cxx/
+.externalNativeBuild/
+**/.externalNativeBuild/
+local.properties
+**/local.properties
+.idea/
+**/.idea/
+*.iml
+**/*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+*.tar.gz
+*.tar
